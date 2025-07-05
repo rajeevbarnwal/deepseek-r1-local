@@ -1,0 +1,37 @@
+name: Smoke Test DeepSeek-R1 on CPU
+
+# Run on every push to main, and allow manual trigger
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Install Ollama
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          ollama version
+
+      - name: Start Ollama server (CPU-only)
+        run: |
+          # disable any GPU devices
+          CUDA_VISIBLE_DEVICES="" ollama serve &
+          sleep 10
+
+      - name: Run a quick DeepSeek test
+        run: |
+          ollama run deepseek-r1:latest \
+            --prompt "Test run" \
+            --max-new-tokens 10
+
+      - name: Stop Ollama server
+        run: pkill ollama || true
+
