@@ -1,0 +1,22 @@
+name: Quick Smoke Test Ollama CLI
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Install Ollama
+        run: curl -fsSL https://ollama.com/install.sh | sh
+
+      - name: Verify Ollama CLI
+        run: ollama list
+
+      - name: Describe DeepSeek-R1
+        run: ollama describe deepseek-r1:latest
