@@ -23,15 +23,13 @@ jobs:
 
       - name: Start Ollama server (CPU-only)
         run: |
-          # Kill any existing server
           pkill ollama || true
-          # Start fresh in CPU-only mode
           CUDA_VISIBLE_DEVICES="" ollama serve &
           sleep 10
 
       - name: Run a quick DeepSeek test
         run: |
-          ollama run deepseek-r1:latest "Test run" --num_predict 10
+          ollama run deepseek-r1:latest "Test run"
 
       - name: Stop Ollama server
         run: pkill ollama || true
