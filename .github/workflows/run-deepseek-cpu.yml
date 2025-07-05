@@ -34,4 +34,3 @@ jobs:
 
       - name: Stop Ollama server
         run: pkill ollama || true
-
