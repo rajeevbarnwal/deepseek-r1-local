@@ -28,9 +28,7 @@ jobs:
 
       - name: Run a quick DeepSeek test
         run: |
-          ollama run deepseek-r1:latest \
-            --prompt "Test run" \
-            --max-new-tokens 10
+          ollama run deepseek-r1:latest "Test run" --max-new-tokens 10
 
       - name: Stop Ollama server
         run: pkill ollama || true
