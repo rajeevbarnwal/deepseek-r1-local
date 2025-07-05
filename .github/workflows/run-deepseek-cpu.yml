@@ -14,6 +14,14 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
+      - name: Cache Ollama models
+        uses: actions/cache@v3
+        with:
+          path: ~/.ollama/models
+          key: ${{ runner.os }}-ollama-models-deepseek-r1
+          restore-keys: |
+            ${{ runner.os }}-ollama-models-
+
       - name: Install Ollama
         run: |
           curl -fsSL https://ollama.com/install.sh | sh
@@ -21,15 +29,21 @@ jobs:
       - name: Verify Ollama installation
         run: ollama list
 
+      - name: Pull DeepSeek model (if missing)
+        run: |
+          if ! ollama list | grep -q deepseek-r1; then
+            ollama pull deepseek-r1:latest
+          fi
+
       - name: Start Ollama server (CPU-only)
         run: |
           pkill ollama || true
           CUDA_VISIBLE_DEVICES="" ollama serve &
           sleep 10
 
-      - name: Run a quick DeepSeek test
+      - name: Run a quick DeepSeek test (30 s timeout)
         run: |
-          ollama run deepseek-r1:latest "Test run"
+          timeout 30s ollama run deepseek-r1:latest "Test run"
 
       - name: Stop Ollama server
         run: pkill ollama || true
